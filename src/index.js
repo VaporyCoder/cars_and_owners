@@ -22,6 +22,11 @@ const App = () => {
     fetchCars();
   }, []);
 
+  const makeOwner = async(car, owner)=> {
+    car = {...car, owner_id: owner.id};
+    await axios.put(`/api/cars/${car.id}`)
+  }
+
   return (
     <div>
       <h1>Cars Tracker</h1>
@@ -56,6 +61,13 @@ const App = () => {
                           className={car.owner_id === owner.id ? "owner" : ""}
                         >
                           {owner.name}
+                          {
+                            car.owner_id === owner.id ? (
+                              <button>Revoke Owner</button>
+                            ):(
+                              <button onClick={()=> makeOwner(car, owner)}>Make Owner</button>
+                            )
+                            }
                         </li>
                       );
                     })}

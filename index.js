@@ -18,39 +18,41 @@ app.get("/dist/main.js.map", (req, res) => res.sendFile(reactSourceMap));
 const styleSheet = path.join(__dirname, "styles.css");
 app.get("/styles.css", (req, res) => res.sendFile(styleSheet));
 
-app.get('/api/cars', async(req,res,next)=> {
-  try {
-    const response = await client.query('SELECT * FROM cars');
-    res.send(response.rows)
-  }
-  catch(error){
-    next(error)
-  }
-});
-
-app.get('/api/owners', async(req,res,next)=> {
-  try {
-    const response = await client.query('SELECT * FROM owners');
-    res.send(response.rows)
-  }
-  catch(error){
-    next(error)
-  }
-});
-
-app.put('/api/cars/:id', async(req, res, next)=> {
+app.put("/api/cars/:id", async (req, res, next) => {
   try {
     const SQL = `
     UPDATE cars
     SET owner_id = $1, name = $2
     WHERE id = $3 RETURNING *
     `;
-    const response = await client.query(SQL, [req.body.owner_id, req.body.name, req.params.id]);
-    res.send(response.rows[0])
+    const response = await client.query(SQL, [
+      req.body.owner_id,
+      req.body.name,
+      req.params.id,
+    ]);
+    res.send(response.rows[0]);
   } catch (error) {
-    next(error)
+    next(error);
   }
-})
+});
+
+app.get("/api/cars", async (req, res, next) => {
+  try {
+    const response = await client.query("SELECT * FROM cars");
+    res.send(response.rows);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get("/api/owners", async (req, res, next) => {
+  try {
+    const response = await client.query("SELECT * FROM owners");
+    res.send(response.rows);
+  } catch (error) {
+    next(error);
+  }
+});
 
 const init = async () => {
   await client.connect();
